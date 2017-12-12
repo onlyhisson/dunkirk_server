@@ -59,28 +59,38 @@ public class GreetingController {
 	// Person obj list 에 조회
 	@RequestMapping(value = "/person/detail", method = RequestMethod.POST)
 	public Person getPerson(@RequestParam (value = "name") String name) {
-		int num;
-		for (num = 0; num < persons.size(); num++) {
-			Person getPerson = persons.get(num);
-			if (name.equals(getPerson.getName())) {
-				break;
+		return findPersonByName(name);
+	}
+	
+	private Person findPersonByName(String name) {
+		for (Person person : persons) {
+			if (name.equals(person.getName())) {
+				return person;
 			}
 		}
-
-		return persons.get(num);
+		return null;
 	}
 
 	// Person obj list 에서 삭제
 	@RequestMapping(value = "/person/delete", method = RequestMethod.POST)
 	public void deletePerson(@RequestParam(value = "name") String name) {
-		int num;
-		for (num = 0; num < persons.size(); num++) {
+		for (int num = 0; num < persons.size(); num++) {
 			Person getPerson = persons.get(num);
 			if (name.equals(getPerson.getName())) {
-				break;
+				persons.remove(num);
+				return;
 			}
 		}
-		persons.remove(num);
+	}
+	
+	int indexOf(String name) {
+		for (int num = 0; num < persons.size(); num++) {
+			Person getPerson = persons.get(num);
+			if (name.equals(getPerson.getName())) {
+				return num;
+			}
+		}
+		return -1;
 	}
 
 	// Person obj Update
@@ -90,30 +100,10 @@ public class GreetingController {
 			@RequestParam(value = "address", required=false) String address,
 			@RequestParam(value = "hobby", required=false) String hobby,
 			@RequestParam(value = "nationality", required=false) String nationality) {
-		
-		// to be changed Object's index number
-		int num;
 		// New Data Object
 		Person setPerson;
-		// Old Date Object
-		Person getPerson;
-
-		for (num = 0; num < persons.size(); num++) {
-			getPerson = persons.get(num);
-			if (name.equals(getPerson.getName())) {
-				break;
-			}
-		}
-		
-		//load to be changed Object
-		getPerson = persons.get(num);
-		
-		/*
-		System.out.println("=========================================");
-		System.out.println(address + "  " + hobby + "  " + nationality);
-		System.out.println("=========================================");
-		*/
-		
+		Person getPerson = findPersonByName(name);
+	
 		if(address == null || "".equals(address))
 			if(address == null || "".equals(address))
 			address = getPerson.getAddress();
@@ -123,14 +113,8 @@ public class GreetingController {
 			nationality = getPerson.getNationality();
 		
 		setPerson = new Person(name, address, hobby, nationality);
-		
-		//persons.remove(num);	
-		persons.set(num, setPerson);
+		persons.set(indexOf(name), setPerson);
 	}
-
-	/*
-	 * #############################################################################
-	 */
 	
 	//조회 
 	@RequestMapping(value = "/articles", method = RequestMethod.GET)
