@@ -1,5 +1,6 @@
 package hello;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -57,8 +58,8 @@ public class GreetingController {
 	}
 	
 	// Person obj list 에 조회
-	@RequestMapping(value = "/person/detail", method = RequestMethod.POST)
-	public Person getPerson(@RequestParam (value = "name") String name) {
+	@RequestMapping(value = "/person/{name:.+}", method = RequestMethod.GET)
+	public Person getPerson(@PathVariable(value = "name") String name) {
 		return findPersonByName(name);
 	}
 	
@@ -72,8 +73,8 @@ public class GreetingController {
 	}
 
 	// Person obj list 에서 삭제
-	@RequestMapping(value = "/person/delete", method = RequestMethod.POST)
-	public void deletePerson(@RequestParam(value = "name") String name) {
+	@RequestMapping(value = "/person/{name:.+}", method = RequestMethod.DELETE)
+	public void deletePerson(@PathVariable(value = "name") String name) {
 		for (int num = 0; num < persons.size(); num++) {
 			Person getPerson = persons.get(num);
 			if (name.equals(getPerson.getName())) {
@@ -214,14 +215,13 @@ public class GreetingController {
 		// Person obj list 에서 삭제
 			@RequestMapping(value = "/comments/{name}", method = RequestMethod.DELETE)
 			public void deleteComment(@PathVariable(value = "name") String name) {
-				int num;
-				for (num = 0; num < comments.size(); num++) {
+				for (int num = 0; num < comments.size(); num++) {
 					Comment getComment = comments.get(num);
 					if (name.equals(getComment.getName())) {
-						break;
+						comments.remove(num);
 					}
 				}
-				comments.remove(num);
+				
 			}
 			
 			// 수정 
@@ -240,5 +240,4 @@ public class GreetingController {
 				}
 				comments.set(num, setComment);
 			}
-
 }
