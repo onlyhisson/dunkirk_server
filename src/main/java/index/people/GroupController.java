@@ -19,9 +19,11 @@ public class GroupController {
 
 	/* input sample data */
 	@RequestMapping(value = "/group/sampledata", method = RequestMethod.PUT)
-	public void putGroupTestData() {
+	public boolean putGroupTestData() {
 		groups.add(new Group(1, "myeongseong", "church"));
 		groups.add(new Group(2, "lg", "company"));
 		groups.add(new Group(3, "seoul", "university"));
+		
+		return true;
 	}
 }
